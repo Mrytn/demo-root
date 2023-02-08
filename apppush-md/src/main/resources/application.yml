@@ -1,0 +1,4 @@
+server:
+  port: 9012
+  servlet:
+    context-path: /apppush/

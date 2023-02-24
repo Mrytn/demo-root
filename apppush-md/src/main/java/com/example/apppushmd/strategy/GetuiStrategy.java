@@ -10,6 +10,7 @@ import com.getui.push.v2.sdk.api.PushApi;
 import com.getui.push.v2.sdk.api.StatisticApi;
 import com.getui.push.v2.sdk.api.UserApi;
 import com.getui.push.v2.sdk.common.ApiResult;
+import com.getui.push.v2.sdk.core.factory.GtApiProxyFactory;
 import com.getui.push.v2.sdk.dto.req.*;
 import com.getui.push.v2.sdk.dto.req.message.PushBatchDTO;
 import com.getui.push.v2.sdk.dto.req.message.PushChannel;
@@ -29,6 +30,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Proxy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -63,6 +65,8 @@ public class GetuiStrategy extends PushStrategy {
     private AuthApi authApi;
 
     private UserApi userApi;
+
+    private boolean valid;
 
     private final PushApi pushApi;
 
@@ -99,9 +103,9 @@ public class GetuiStrategy extends PushStrategy {
         try {
             // 实例化ApiHelper对象，用于创建接口对象
             ApiHelper apiHelper = ApiHelper.build(apiConfiguration);
+            PushApi pushApi = apiHelper.creatApi(PushApi.class);
             AuthApi authApi = apiHelper.creatApi(AuthApi.class);
             UserApi userApi = apiHelper.creatApi(UserApi.class);
-            PushApi pushApi = apiHelper.creatApi(PushApi.class);
             StatisticApi statisticApi = apiHelper.creatApi(StatisticApi.class);
             return new GetuiStrategy(userApi, authApi, pushApi, statisticApi);
         } catch (Exception e) {

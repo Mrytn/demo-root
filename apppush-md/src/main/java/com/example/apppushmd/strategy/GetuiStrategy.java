@@ -10,7 +10,6 @@ import com.getui.push.v2.sdk.api.PushApi;
 import com.getui.push.v2.sdk.api.StatisticApi;
 import com.getui.push.v2.sdk.api.UserApi;
 import com.getui.push.v2.sdk.common.ApiResult;
-import com.getui.push.v2.sdk.core.factory.GtApiProxyFactory;
 import com.getui.push.v2.sdk.dto.req.*;
 import com.getui.push.v2.sdk.dto.req.message.PushBatchDTO;
 import com.getui.push.v2.sdk.dto.req.message.PushChannel;
@@ -25,12 +24,12 @@ import com.getui.push.v2.sdk.dto.req.message.ios.Aps;
 import com.getui.push.v2.sdk.dto.req.message.ios.IosDTO;
 import com.getui.push.v2.sdk.dto.res.*;
 import com.getui.push.v2.sdk.dto.res.statistic.StatisticDTO;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.Proxy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -125,6 +124,15 @@ public class GetuiStrategy extends PushStrategy {
         pushDTO.setRequestId(System.currentTimeMillis() + "");
         PushMessage pushMessage = new PushMessage();
         pushDTO.setPushMessage(pushMessage);
+//        base(userId, title, content, url, pushDTO, pushMessage);
+        transmission(userId, title, content, url, pushDTO, pushMessage);
+
+        return pushDTO;
+    }
+
+    //通知消息
+    private void base(String userId, String title, String content, String url, PushDTO<Audience> pushDTO,
+                      PushMessage pushMessage) {
         GTNotification notification = new GTNotification();
         pushMessage.setNotification(notification);
         notification.setTitle(Optional.ofNullable(title).orElse(DEFAULT_TITLE));
@@ -175,9 +183,65 @@ public class GetuiStrategy extends PushStrategy {
         aps.setAlert(alert);
         alert.setTitle(title);
         alert.setBody(content);
+    }
 
-        System.out.println(pushDTO);
-        return pushDTO;
+    //透传消息
+    private void transmission(String userId, String title, String content, String url, PushDTO<Audience> pushDTO,
+                      PushMessage pushMessage) {
+        GTNotification notification = new GTNotification();
+        pushMessage.setNotification(notification);
+//        pushMessage.setTransmission("cc");
+        notification.setTitle(Optional.ofNullable(title).orElse(DEFAULT_TITLE)+"cc3");
+        notification.setBody(content);
+        if (StrUtil.isEmpty(url)) {
+            //回到应用首页
+            notification.setClickType("startapp");
+        } else {
+            //跳转指定网址
+            notification.setClickType("url");
+            notification.setUrl(url);
+        }
+        //跳转应用内页面
+//        notification.setClickType("intent");
+//        notification.setUrl("intent://com.o2o.erp.oa/detail?#Intent;scheme=gtpushscheme;launchFlags=0x4000000;\n" +
+//                "package=com.o2o.erp.oa;component=com.o2o.erp.oa/\n" +
+//                "com.o2o.erp.oa.DemoActivity;S.payload=payloadStr;end");
+        // 设置接收人信息
+        Audience audience = new Audience();
+        pushDTO.setAudience(audience);
+        String clientId = getClientId(userId);
+        if (StrUtil.isEmpty(clientId)) {
+//            throw new ServiceException("clientId is null");
+        }
+        audience.addCid(clientId);
+        // 设置厂商通道消息
+        PushChannel pushChannel = new PushChannel();
+        pushDTO.setPushChannel(pushChannel);
+        // android
+        AndroidDTO androidDTO = new AndroidDTO();
+        pushChannel.setAndroid(androidDTO);
+        Ups ups = new Ups();
+        androidDTO.setUps(ups);
+        ThirdNotification thirdNotification = new ThirdNotification();
+        ups.setNotification(thirdNotification);
+        thirdNotification.setTitle(title);
+        thirdNotification.setBody(content);
+        thirdNotification.setClickType("startapp");
+//        ups.addOption("XM", "channel", "Default");
+        ups.addOption("XM", "channel", "high_system");
+        ups.addOption("HW", "/message/android/notification/importance", "NORMAL");
+        // IOS
+        IosDTO iosDTO = new IosDTO();
+        pushChannel.setIos(iosDTO);
+        Aps aps = new Aps();
+        iosDTO.setAps(aps);
+        Alert alert = new Alert();
+        aps.setAlert(alert);
+//        alert.setTitle(title);
+        alert.setBody(content);
+//        alert.setTitleLocKey("cc");
+//        alert.setTitleLocArgs(Lists.newArrayList("rr"));
+//        alert.setSubtitle("33");
     }
 
     private PushDTO<Audience> buildPushDTOSchedule(String userId, String title, String content, String intent,
@@ -550,6 +614,7 @@ public class GetuiStrategy extends PushStrategy {
     private String createMessage(String title, String content, String url, String intent) {
         PushDTO<Audience> pushDTO = buildPushDTO(null, title, content, url, intent);
         ApiResult<TaskIdDTO> msg = pushApi.createMsg(pushDTO);
+        System.out.println("createMessage:"+msg);
         return Optional.ofNullable(msg).map(ApiResult::getData).map(TaskIdDTO::getTaskId).orElse(null);
     }
 

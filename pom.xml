@@ -6,6 +6,7 @@
   <modules>
     <module>test-md</module>
     <module>apppush-md</module>
+    <module>mybatisplus-md</module>
   </modules>
 
   <parent>

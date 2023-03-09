@@ -37,8 +37,8 @@ public class TestResource {
 
     @Test
     public void t2() {
-        DecimalFormat df = new DecimalFormat("00%");
-        System.out.println(df.format(1-20.0/30));
+        DecimalFormat df = new DecimalFormat("0.0%");
+        System.out.println(df.format(0*1.0/30));
     }
 
     @Test

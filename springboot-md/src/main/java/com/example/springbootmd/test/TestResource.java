@@ -1,6 +1,8 @@
 package com.example.springbootmd.test;
 
+import com.example.springbootmd.PersonService;
 import com.example.springbootmd.StudentService;
+import com.example.springbootmd.entity.Person;
 import com.example.springbootmd.entity.Student;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +28,9 @@ public class TestResource {
     @Resource
     private StudentService studentService;
 
+    @Resource
+    private PersonService personService;
+
     @Test
     public void t1() {
         Student student = new Student()
@@ -33,6 +38,15 @@ public class TestResource {
                 .setAge(12)
                 .setDate(LocalDate.now());
         studentService.save(student);
+    }
+
+    @Test
+    public void insertPerson() {
+        Person person = new Person()
+                .setName("张三3")
+                .setAge(13)
+                .setDate(LocalDate.now());
+        personService.save(person);
     }
 
     @Test
@@ -62,7 +76,7 @@ public class TestResource {
         List<String> strings = stringList1_2.stream()
                 .filter(item -> stringList.contains(item))
                 .collect(Collectors.toList());
-        System.out.println("交集2：" + strings);
+        System.out.println("交2：" + strings);
 
         //二、并集
         //有重并集

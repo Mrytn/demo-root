@@ -52,9 +52,20 @@ public class TestResource {
     @Test
     public void t2() {
         Student info = studentService.getInfo(1);
+        Person person = new Person().setName("33").setAge(11).setC(3);
+        String s = "33";
+        Integer f=5;
+        int cd=5;
+        get1(person,s,cd,f);
         System.out.println("c");
     }
 
+    void get1(Person person, String s, int cd,Integer f) {
+        person.setName("22").setAge(22).setC(2);
+        s = "22";
+        cd=2;
+        f=6;
+    }
     @Test
     public void t3() {
         List<String> stringList = new ArrayList<>();
@@ -107,5 +118,23 @@ public class TestResource {
 //
 //        SpringApplication.run(DemoApplication.class, args);
     }
+
+    @Test()
+    public void  t13() {
+        List<Person> list = null;
+        List<Person> list2 = new ArrayList<>();
+//        for (int i = 0; i < list.size(); i++) {
+//
+//        }
+        for (Person person : list) {
+            person.getAge();
+        }
+        for (Person person : list2) {
+            person.getAge();
+        }
+
+        List<Student> list1 = studentService.lambdaQuery().eq(Student::getAge, 111).list();
+        System.out.println(33);
     }
+}
 

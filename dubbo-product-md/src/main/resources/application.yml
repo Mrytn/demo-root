@@ -38,7 +38,7 @@ dubbo:
       registry-type: service
   protocol:
     name: dubbo
-    host: ${local-ip}
+    host: localhost:8848
     port: -1
   configCenter:
     address: nacos://localhost:8848

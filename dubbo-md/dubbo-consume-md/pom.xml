@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dubbo-md</artifactId>
+        <groupId>com.demo</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+<!--        <relativePath>../pom.xml</relativePath>-->
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.demo</groupId>
+    <artifactId>dubbo-consume-md</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>dubbo-consume-md</name>
+    <description>dubbo-consume-md</description>
+    <packaging>pom</packaging>
+    <modules>
+        <module>dubbo-consume-api-md</module>
+        <module>dubbo-consume-service-md</module>
+    </modules>
+    <properties>
+    </properties>
+
+    <dependencies>
+    </dependencies>
+
+
+</project>

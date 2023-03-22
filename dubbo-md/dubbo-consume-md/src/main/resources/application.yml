@@ -1,0 +1,49 @@
+
+spring:
+  application:
+    name: dubbo_consume_md
+    age: dubbo_consume_md2
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+cloud:
+  nacos:
+    discovery:
+      register-enabled: true
+      #      # nancos地址
+      server-addr: ${nacos.addr}
+      # app-enabled: false
+      #      metadata:
+      #        dubbo:
+      #          metadata:
+      #            revision: 0
+      #    config:
+      #      enabled: true
+      #      server-addr: ${nacos.addr}
+      # app-enabled: false
+dubbo:
+  #  provider:
+  #    timeout: 10000
+  #  scan:
+  #    base-packages: com.o2o.mix.app.push.service
+  application:
+    name: ${spring.application.name}_dubbo_service
+    #    qosEnable: false
+    #    qosAcceptForeignIp: false
+    #    qosPort: 1234
+    #status-enabled: true
+  registry:
+    dynamic: true
+    # address: nacos2://${nacos.addr}?appListenerEnable=true
+    address: nacos://${nacos.addr}
+    parameters:
+      registry-type: service
+  protocol:
+    name: dubbo
+    #    host: ${nacos.addr}
+    port: -1
+#  configCenter:
+#    address: nacos://${nacos.addr}
+#  metadataReport:
+#    address: nacos://${nacos.addr}
+server:
+  port: 8017
